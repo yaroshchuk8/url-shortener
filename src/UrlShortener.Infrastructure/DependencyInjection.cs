@@ -17,7 +17,7 @@ public static class DependencyInjection
     public static IServiceCollection AddPersistence(this IServiceCollection services)
     {
         services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlite("Data Source = GymManagement.db"));
+            options.UseSqlite("Data Source = UrlShortener.db"));
 
         services.AddScoped<IUrlRepository, UrlRepository>();
 
