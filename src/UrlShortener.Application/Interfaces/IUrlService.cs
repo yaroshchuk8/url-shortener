@@ -6,6 +6,6 @@ public interface IUrlService
 {
     Task<IEnumerable<Url>> GetAllUrlsAsync();
     Task<Url?> GetUrlByIdAsync(int id);
-    Task<Url> CreateShortUrlAsync(string originalUrl, string createdBy);
+    Task CreateShortUrlAsync(string originalUrl, string baseUrl, string createdBy);
     Task DeleteUrlAsync(int id, string currentUser);
 }

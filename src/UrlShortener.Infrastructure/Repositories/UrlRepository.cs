@@ -19,7 +19,10 @@ public class UrlRepository : IUrlRepository
     public async Task<Url?> GetByIdAsync(int id) => await _context.Urls.FindAsync(id);
 
     public async Task<Url?> GetByOriginalUrlAsync(string originalUrl) =>
-        await _context.Urls.FirstOrDefaultAsync(u => u.OriginalUrl == originalUrl);
+        await _context.Urls.FirstOrDefaultAsync(u => u.LongUrl == originalUrl);
+    
+    public async Task<Url?> GetByCodeAsync(string code) =>
+        await _context.Urls.FirstOrDefaultAsync(u => u.Code == code);
 
     public async Task AddAsync(Url url)
     {

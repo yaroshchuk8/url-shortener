@@ -6,6 +6,10 @@ namespace UrlShortener.Application.Services;
 public class UrlService : IUrlService
 {
     private readonly IUrlRepository _repository;
+    private readonly Random _random = new();
+    
+    private const string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private const int NumberOfCharsInShortLink = 7;
     
     public UrlService(IUrlRepository repository)
     {
@@ -24,28 +28,23 @@ public class UrlService : IUrlService
         return url;
     }
 
-    public async Task<Url> CreateShortUrlAsync(string originalUrl, string createdBy)
+    public async Task CreateShortUrlAsync(string originalUrl, string baseUrl, string createdBy)
     {
         var existing = await _repository.GetByOriginalUrlAsync(originalUrl);
         if (existing != null) throw new InvalidOperationException("URL already exists.");
 
+        var code = GenerateShortUrl(originalUrl);
+        
         var shortUrl = new Url
         {
-            OriginalUrl = originalUrl,
-            ShortenedUrl = GenerateShortUrl(originalUrl),
+            LongUrl = originalUrl,
+            ShortUrl = baseUrl + code,
             CreatedBy = createdBy,
-            CreatedDate = DateTime.UtcNow
+            Code = code,
+            CreatedOnUtc = DateTime.UtcNow
         };
 
         await _repository.AddAsync(shortUrl);
-        return new Url
-        {
-            Id = shortUrl.Id,
-            OriginalUrl = shortUrl.OriginalUrl,
-            ShortenedUrl = shortUrl.ShortenedUrl,
-            CreatedBy = shortUrl.CreatedBy,
-            CreatedDate = shortUrl.CreatedDate
-        };
     }
 
     public async Task DeleteUrlAsync(int id, string currentUser)
@@ -61,9 +60,17 @@ public class UrlService : IUrlService
 
     private string GenerateShortUrl(string originalUrl)
     {
-        // Simple Base62 encoding
-        var hash = Math.Abs(originalUrl.GetHashCode());
-        return Convert.ToBase64String(BitConverter.GetBytes(hash))
-            .Replace("/", "").Replace("+", "").Substring(0, 8);
+        var codeChars = new char[NumberOfCharsInShortLink];
+
+        for (var i = 0; i < NumberOfCharsInShortLink; i++)
+        {
+            int randomIndex = _random.Next(Alphabet.Length - 1);
+            
+            codeChars[i] = Alphabet[randomIndex];
+        }
+
+        var code = new string(codeChars);
+        
+        return code;
     }
 }

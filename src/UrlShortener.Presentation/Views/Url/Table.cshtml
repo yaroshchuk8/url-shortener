@@ -1,0 +1,38 @@
+@using UrlShortener.Domain.Entities
+@model IEnumerable<Url>
+
+@{
+    ViewData["Title"] = "Genre Management";
+}
+
+<div class="container">
+    <div class="row pt-4 pb-3">
+        <div class="col-6">
+            <h2 class="text-primary">Url Table</h2>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th style="width:7%">Id</th>
+            <th>LongUrl</th>
+            <th>ShortUrl</th>
+            <th>CreatedBy</th>
+            <th>CreatedOnUtc</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach(Url url in Model)
+        {
+            <tr>
+                <td>@url.Id</td>
+                <td>@url.LongUrl</td>
+                <td>@url.ShortUrl</td>
+                <td>@url.CreatedBy</td>
+                <td>@url.CreatedOnUtc</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
